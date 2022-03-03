@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="correct-xmldb-format.xslt"?>
+<XMLDB PATH="/local/message/db" VERSION="2013013100" COMMENT="XMLDB file for local message plugin"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+    <TABLES>
+        <TABLE NAME="local_message" COMMENT="each record is a message">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="message_text" TYPE="text"  NOTNULL="true" SEQUENCE="FALSE" />
+                <FIELD NAME="message_type" TYPE="text"  NOTNULL="true" SEQUENCE="FALSE" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+          <TABLE NAME="local_message_read" COMMENT="each record is a user record or reading a message">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="message_id" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="FALSE" />
+                 <FIELD NAME="user_id" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="FALSE" />
+                  <FIELD NAME="time_read" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="FALSE" />
+
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+        
+    </TABLES>
+</XMLDB>
