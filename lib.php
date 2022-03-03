@@ -24,15 +24,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+
+use local_message\manager;
 function local_message_before_footer()
 {
 
-   require_once(__DIR__.'/classes/message_manager.php');
-
    global $DB, $USER;
    
-   $message_manager = new MessageManager();
+   $message_manager = new manager();
    $message_manager->DisplayMessagesForUsers();
+ 
 
 
 

@@ -23,6 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 //moodleform is defined in formslib.php
+
+namespace local_message\form;
+use moodleform;
+
 require_once("$CFG->libdir/formslib.php");
 
 class edit extends moodleform {

@@ -1,6 +1,4 @@
 <?php
-use FFI\Exception;
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,9 +23,11 @@ use FFI\Exception;
  */
 //moodleform is defined in formslib.php
 
+namespace local_message;
+use stdClass;
+use Exception;
 
-class MessageManager
-{
+ class manager {
     const TABLE = 'local_message';
     protected $id;
     protected $message_text;
@@ -43,7 +43,7 @@ class MessageManager
         $this->message_type = $message_type;
     }
 
-    public function Create($message_text, $message_type)
+    public function Create($message_text, $message_type): bool
     {
         global $DB;
         $result = NULL;
@@ -52,12 +52,13 @@ class MessageManager
          $message->message_type = $message_type;
         
         try {
-            $result = $DB->insert_record($this::TABLE, $message);
+            $result = $DB->insert_record($this::TABLE, $message, false);
+            return $result;
         }
         catch (Exception $e) {
             return false;
         }
-        return $result;
+       
     }
 
     public function Delete($id)
@@ -66,11 +67,12 @@ class MessageManager
         $result = NULL;
         try {
             $result = $DB->delete_records($this::TABLE, ['id' => $id]);
+            return $result;
         }
         catch (Exception $e) {
             return false;
         }
-        return $result;
+       
     }
 
     public function Update($id, $message_text = NULL, $message_type = NULL)
@@ -83,11 +85,12 @@ class MessageManager
         $this->message_type = $message_type;
         try {
             $result = $DB->update_record($this::TABLE, $this);
+            return $result;
         }
         catch (Exception $e) {
             return false;
         }
-        return $result;
+       
     }
 
     public function GetRecord($id)
@@ -96,31 +99,33 @@ class MessageManager
         $result = NULL;
         try {
             $result = $DB->get_record($this::TABLE, ['id' => $id]);
+            return $result;
         }
         catch (Exception $e) {
             return false;
         }
-        return $result;
+      
     }
     public function GetRecords($params = [])
     {
         global $DB;
         $result = NULL;
         try {
-            $result = $DB->get_records($this::TABLE, $params);
+            $result = $DB->get_records($this::TABLE);
+            return $result;
         }
         catch (Exception $e) {
             return false;
         }
-        return $result;
+        
     }
 
     public function DisplayMessagesForUsers()
     {
         global $DB, $USER;
-        $sql = "SELECT lm.id, lm.message_text, lm.message_type FROM {local_message} lm
-            left outer join {local_message_read} lmr ON lm.id = lmr.message_id
-            WHERE lmr.user_id <> :userid OR lmr.user_id IS NULL";
+        $sql = "SELECT lm.id, lm.message_text, lm.message_type,lmr.user_id FROM {local_message} lm
+            left outer join {local_message_read} lmr ON lm.id = lmr.message_id AND lmr.user_id = :userid
+            WHERE lmr.user_id IS NULL";
 
         $params = [
             'userid' => $USER->id,
@@ -144,14 +149,11 @@ class MessageManager
                       $message_type = \core\output\notification::NOTIFY_INFO;
                       break;
                 }
-                if($message->id)
+                if($message->id){
                 \core\notification::add($message->message_text, $message_type);
           
-                $readrecord = new stdClass();
-                $readrecord->message_id = $message->id;
-                $readrecord->user_id = $USER->id;
-                $readrecord->time_read = time();
-                $DB->insert_record('local_message_read', $readrecord);
+                 $this->markMessageRead($message->id,$USER->id);
+                 }
           
              }
         }
@@ -160,6 +162,26 @@ class MessageManager
         }
 
         return $messages;
+    }
+
+    public function markMessageRead($messageid, $userid){
+        global $DB;
+        $readrecord = new stdClass();
+        $readrecord->message_id = $messageid;
+        $readrecord->user_id = $userid;
+        $readrecord->time_read = time();
+        try{
+       $result = $DB->insert_record('local_message_read', $readrecord,false);
+       return $result;
+        }
+        catch(Exception $e){
+            return false;
+        }
+    }
+
+    public function get_all_message_read(){
+        global $DB;
+        return $DB->get_records('local_message_read');
     }
 
 

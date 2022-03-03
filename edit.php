@@ -22,9 +22,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ use local_message\manager;
+ use local_message\form\edit;
+ 
 require_once(__DIR__.'/../../config.php');
-require_once(__DIR__.'/classes/form/edit.php');
-require_once(__DIR__.'/classes/message_manager.php');
+
 
 global $DB;
 $plugin_name = 'local_message';
@@ -49,7 +51,7 @@ if ($mform->is_cancelled()) {
   //In this case you process validated data. $mform->get_data() returns data posted in form.
  //Insert data into database table
     
-    $insert_data = new MessageManager();
+    $insert_data = new manager();
     $insert_data->Create($fromform->messagetext,$fromform->messagetype);
     if($insert_data){
     redirect($CFG->wwwroot . '/local/message/manage.php','Message has been saved' . $fromform->messagetext);
