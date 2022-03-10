@@ -25,4 +25,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_message';
 $plugin->release = 'v1.0.0';
-$plugin->version = 2022030101;
+$plugin->version = 2022031000;

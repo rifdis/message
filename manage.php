@@ -23,11 +23,13 @@
  */
 
 require_once(__DIR__.'/../../config.php');
-global $DB;
+use local_message\manager;
 $plugin_name = 'local_message';
 
-//require_login();
-
+require_login();
+//require_admin();
+$context = context_system::instance();
+require_capability('local/message:managemessages', $context);
 $PAGE->set_url($CFG->wwwroot.'/local/message/manage.php');
 
 $context = context_system::instance();
@@ -36,8 +38,9 @@ $PAGE->set_context($context);
 $PAGE->set_title(get_string('pluginname', $plugin_name));
 $PAGE->set_heading(get_string('pluginname', $plugin_name));
 $PAGE->set_pagelayout('admin');
-
-$messages = $DB->get_records('local_message');
+$PAGE->requires->js_call_amd('local_message/confirm');
+$manager = new manager();
+$messages = $manager->GetRecords();
 
 
 echo $OUTPUT->header();
@@ -45,7 +48,8 @@ echo $OUTPUT->header();
 $templatecontext = (object)[
     'texttodisplay' => "List of all current messages",
     'messages' => array_values($messages),
-    'create_url' => new moodle_url('/local/message/edit.php')
+    'editurl' => new moodle_url('/local/message/edit.php')
+
 ];
 
 echo $OUTPUT->render_from_template('local_message/manage',$templatecontext);

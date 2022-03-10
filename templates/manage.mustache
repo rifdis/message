@@ -34,10 +34,14 @@
 }}
 <h1>Manage Messages</h1>
 <p>{{texttodisplay}}</p>
-<ul>
-    {{#messages}}
-    <li><span>{{message_text}}</span> - <span>Message type: <b>{{message_type}}</b></span></li>
-    {{/messages}}
-</ul>
+{{#messages}}
+<div class="card">
+    <div class="card-body mt-3">
+       <p> {{message_text}} Message type: {{message_type}} </p>
+        <input type="button" class="btn btn-primary" value="Edit Message" onclick="location.href='{{editurl}}?message_id={{id}}'">
+        <input type="button" class="btn btn-danger local_message_delete_button" data-id="{{id}}" value="Delete Message">
+    </div>
+  </div>
+  {{/messages}}
 <hr>
-<input type="button" class="btn btn-primary" value='Create Message' onclick="location.href='{{create_url}}'">
+<input type="button" class="btn btn-primary" value='Create Message' onclick="location.href='{{editurl}}'">

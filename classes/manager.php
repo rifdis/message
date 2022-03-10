@@ -61,12 +61,12 @@ use Exception;
        
     }
 
-    public function Delete($id)
+    public function Delete($id): bool
     {
         global $DB;
         $result = NULL;
         try {
-            $result = $DB->delete_records($this::TABLE, ['id' => $id]);
+            $result = $DB->delete_records($this::TABLE, ['id' => $id],false);
             return $result;
         }
         catch (Exception $e) {
@@ -79,12 +79,13 @@ use Exception;
     {
         global $DB;
         $result = NULL;
-        $this->id = $id;
-        $this->message_type = $message_type;
-        $this->message_text = $message_text;
-        $this->message_type = $message_type;
+        $message = new stdClass();
+        $message->id = $id;
+        $message->message_text = $message_text;
+        $message->message_type = $message_type;
+     
         try {
-            $result = $DB->update_record($this::TABLE, $this);
+            $result = $DB->update_record($this::TABLE, $message);
             return $result;
         }
         catch (Exception $e) {

@@ -26,19 +26,19 @@
  use local_message\form\edit;
  
 require_once(__DIR__.'/../../config.php');
-
-
-global $DB;
+require_login();
+$context = context_system::instance();
+require_capability('local/message:managemessages', $context);
+$manager = new manager();
 $plugin_name = 'local_message';
 $PAGE->set_url($CFG->wwwroot.'/local/message/manage.php');
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('edit_title', $plugin_name));
 
+$message_id = optional_param('message_id', NULL, PARAM_INT);
 //Display form
 $mform = new edit();
-
-
 
 
 
@@ -51,13 +51,29 @@ if ($mform->is_cancelled()) {
   //In this case you process validated data. $mform->get_data() returns data posted in form.
  //Insert data into database table
     
-    $insert_data = new manager();
-    $insert_data->Create($fromform->messagetext,$fromform->messagetype);
+    if($fromform->id){
+        $insert_data = $manager->Update($fromform->id,$fromform->message_text,$fromform->message_type);
+    }
+    else{
+    $insert_data = $manager->Create($fromform->message_text,$fromform->message_type);
+    }
     if($insert_data){
-    redirect($CFG->wwwroot . '/local/message/manage.php','Message has been saved' . $fromform->messagetext);
+    redirect($CFG->wwwroot . '/local/message/manage.php','Message has been saved' . $fromform->message_text);
     }
 
 }
+
+if ($message_id){
+    //Add extra data
+    $existing_message = $manager->GetRecord($message_id);
+    $mform->set_data($existing_message);
+    if(!$existing_message){
+        throw new invalid_parameter_exception('Message not found');
+        
+    }
+    
+}
+
 echo $OUTPUT->header();
 
 $mform->display();

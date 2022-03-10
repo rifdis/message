@@ -31,8 +31,13 @@ function local_message_before_footer()
 
    global $DB, $USER;
    
+
+ if(get_config('local_message','enabled')){
+      
    $message_manager = new manager();
-   $message_manager->DisplayMessagesForUsers();
+      $message_manager->DisplayMessagesForUsers();
+   }
+
  
 
 
