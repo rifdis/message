@@ -31,3 +31,4 @@ $string['delete_message_confirm'] = 'Are you sure you want to delete this messag
 $string['error_deleting_message'] = 'Error deleting message';
 $string['error_deleting_message'] = 'Error deleting message';
 $string['message:managemessages'] = 'Manage Messages';
+$string['delete_all'] = 'Delete All';

@@ -61,12 +61,17 @@ use Exception;
        
     }
 
-    public function Delete($id): bool
+    public function Delete($id = null,$ids = null): bool
     {
         global $DB;
         $result = NULL;
         try {
-            $result = $DB->delete_records($this::TABLE, ['id' => $id],false);
+            if($id){
+                $result = $DB->delete_records($this::TABLE, ['id'=>$id],false);
+            }
+            else if($ids){
+            $result = $DB->delete_records($this::TABLE, $ids,false);
+        }   
             return $result;
         }
         catch (Exception $e) {
@@ -74,6 +79,8 @@ use Exception;
         }
        
     }
+
+    
 
     public function Update($id, $message_text = NULL, $message_type = NULL)
     {
